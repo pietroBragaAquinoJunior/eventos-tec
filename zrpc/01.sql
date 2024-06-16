@@ -1,7 +1,5 @@
-USE eventostec;
-
 CREATE TABLE IF NOT EXISTS event (
-    id CHAR(36) NOT NULL,
+    id VARCHAR(36) NOT NULL,
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     imgUrl VARCHAR(2048) NOT NULL,

@@ -1,11 +1,11 @@
 CREATE TABLE IF NOT EXISTS coupon (
-    id CHAR(36) NOT NULL,
+    id VARCHAR(36) NOT NULL,
     discount INTEGER NOT NULL,
     code VARCHAR(255) NOT NULL,
     valid_until DATE NOT NULL,
-    event_id CHAR(36) NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (event_id) REFERENCES event(id)
+    event_id VARCHAR(36) NOT NULL,
+    PRIMARY KEY (id)
+
 );
 
 INSERT INTO coupon (id, discount, code, valid_until, event_id)

@@ -4,12 +4,35 @@ package zrpc;
 
 option go_package = "./";
 
-message ZrpcRequest {}
-
-message ZrpcResponse {
-  string msg = 1;
+message Event {
+  string title = 1;
+  string date = 2;
+  string location = 3;
+  string type = 4;
+  string banner = 5;
+  string description = 6;
 }
 
+message ListEventsRequest {
+  int32 Page = 1;
+  int32 PageSize = 2;
+}
+
+message ListEventsResponse {
+  repeated Event events = 1;
+  int32 TotalPages = 2;
+  int32 CurrentPage = 3;
+}
+
+//message EventDetailsRequest{
+//
+//}
+//
+//message EventDetailsResponse{
+//
+//}
+
 service ZrpcService {
-  rpc ZrpcMethod(ZrpcRequest) returns (ZrpcResponse);
+  rpc ListEvents(ListEventsRequest) returns (ListEventsResponse);
+//  rpc EventDetails(EventDetailsRequest) returns (EventDetailsResponse);
 }

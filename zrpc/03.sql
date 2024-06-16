@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS address (
-    id CHAR(36) NOT NULL,
+    id VARCHAR(36) NOT NULL,
     uf VARCHAR(2) NOT NULL,
     city VARCHAR(255) NOT NULL,
-    event_id CHAR(36) NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (event_id) REFERENCES event(id)
+    event_id VARCHAR(36) NOT NULL,
+    PRIMARY KEY (id)
+
 );
 
 INSERT INTO address (id, uf, city, event_id)

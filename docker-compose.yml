@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-
   etcd:
     image: quay.io/coreos/etcd:v3.5.0
     volumes:
@@ -27,14 +26,15 @@ services:
     image: postgres:12
     environment:
       POSTGRES_PASSWORD: 172983456
+      POSTGRES_USER: root
+      POSTGRES_DB: eventostec
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      - ./01.sql:/docker-entrypoint-initdb.d/01.sql
-      - ./02.sql:/docker-entrypoint-initdb.d/02.sql
-      - ./03.sql:/docker-entrypoint-initdb.d/03.sql
-      - ./04.sql:/docker-entrypoint-initdb.d/04.sql
+      - ./zrpc/01.sql:/docker-entrypoint-initdb.d/01.sql
+      - ./zrpc/02.sql:/docker-entrypoint-initdb.d/02.sql
+      - ./zrpc/03.sql:/docker-entrypoint-initdb.d/03.sql
     networks:
       - backend
 
@@ -53,6 +53,10 @@ services:
       dockerfile: ./zrpc/Dockerfile
     ports:
       - "8080:8080"
+    depends_on:
+      - postgres_databases
+      - redis
+      - etcd
     networks:
       - backend
 
