@@ -52,6 +52,7 @@ func (l *ListEventsLogic) ListEvents(in *__.ListEventsRequest) (*__.ListEventsRe
 			Date:        dataHora,
 			Banner:      item.Imgurl,
 			Description: item.Description,
+			Location:    item.Location,
 		}
 		if item.Remote == true {
 			protoEventLocal.Type = "remote"

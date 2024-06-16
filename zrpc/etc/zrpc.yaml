@@ -1,7 +1,15 @@
+#Name: zrpc.rpc
+#ListenOn: 0.0.0.0:8080
+#Etcd:
+#  Hosts:
+#    - etcd:2379
+#  Key: zrpc.rpc
+#DataSourceName: "postgres://root:172983456@postgres_databases:5432/eventostec?sslmode=disable"
+
 Name: zrpc.rpc
 ListenOn: 0.0.0.0:8080
 Etcd:
   Hosts:
-    - etcd:2379
+    - localhost:2379
   Key: zrpc.rpc
-DataSourceName: "postgres://root:172983456@postgres_databases:5432/eventostec?sslmode=disable"
+DataSourceName: "postgres://root:172983456@localhost:5433/eventostec?sslmode=disable"
