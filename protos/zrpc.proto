@@ -4,7 +4,7 @@ package zrpc;
 
 option go_package = "./";
 
-message EventWithLocantionAndTypeString {
+message EventWithLocationAndType {
   string title = 1;
   string date = 2;
   string location = 3;
@@ -14,43 +14,61 @@ message EventWithLocantionAndTypeString {
 }
 
 message ListEventsRequest {
-  int32 Page = 1;
-  int32 PageSize = 2;
+  int32 page = 1;
+  int32 pageSize = 2;
 }
 
 message ListEventsResponse {
-  repeated EventWithLocantionAndTypeString events = 1;
-  int32 TotalPages = 2;
-  int32 CurrentPage = 3;
+  repeated EventWithLocationAndType events = 1;
+  int32 totalPages = 2;
+  int32 currentPage = 3;
 }
 
-//message EventDetailsRequest{
+// Utilizei comentários para manter os trechos de EventDetailsRequest e EventDetailsResponse
+// Descomente e atualize se necessário
+// message EventDetailsRequest {
+//   // Definição de campos necessários
+// }
 //
-//}
-//
-//message EventDetailsResponse{
-//
-//}
+// message EventDetailsResponse {
+//   // Definição de campos necessários
+// }
 
-message Event{
+message Event {
   string title = 1;
   string description = 2;
   string image = 3;
-  string eventurl = 4;
+  string eventUrl = 4;
   bool remote = 5;
   string date = 6;
 }
 
-message CreateEventRequest{
+message CreateEventRequest {
   Event event = 1;
 }
 
-message CreateEventResponse{
-    string msg = 1;
+message CreateEventResponse {
+  string eventId = 1;
+}
+
+message Coupon{
+  string code = 1;
+  int32  discount = 2;
+  string date = 3;
+}
+
+message CreateCouponRequest {
+  string eventId = 1;
+  Coupon coupon = 2;
+}
+
+message CreateCouponResponse {
+  string couponId = 1;
 }
 
 service ZrpcService {
   rpc ListEvents(ListEventsRequest) returns (ListEventsResponse);
-//  rpc EventDetails(EventDetailsRequest) returns (EventDetailsResponse);
+  // rpc EventDetails(EventDetailsRequest) returns (EventDetailsResponse);
   rpc CreateEvent(CreateEventRequest) returns (CreateEventResponse);
+  rpc CreateCoupon(CreateCouponRequest) returns (CreateCouponResponse);
 }

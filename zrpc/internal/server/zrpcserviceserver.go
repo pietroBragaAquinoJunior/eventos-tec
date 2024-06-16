@@ -32,3 +32,8 @@ func (s *ZrpcServiceServer) CreateEvent(ctx context.Context, in *__.CreateEventR
 	l := logic.NewCreateEventLogic(ctx, s.svcCtx)
 	return l.CreateEvent(in)
 }
+
+func (s *ZrpcServiceServer) CreateCoupon(ctx context.Context, in *__.CreateCouponRequest) (*__.CreateCouponResponse, error) {
+	l := logic.NewCreateCouponLogic(ctx, s.svcCtx)
+	return l.CreateCoupon(in)
+}

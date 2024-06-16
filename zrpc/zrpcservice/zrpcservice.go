@@ -13,17 +13,21 @@ import (
 )
 
 type (
-	CreateEventRequest              = __.CreateEventRequest
-	CreateEventResponse             = __.CreateEventResponse
-	Event                           = __.Event
-	EventWithLocantionAndTypeString = __.EventWithLocantionAndTypeString
-	ListEventsRequest               = __.ListEventsRequest
-	ListEventsResponse              = __.ListEventsResponse
+	Coupon                   = __.Coupon
+	CreateCouponRequest      = __.CreateCouponRequest
+	CreateCouponResponse     = __.CreateCouponResponse
+	CreateEventRequest       = __.CreateEventRequest
+	CreateEventResponse      = __.CreateEventResponse
+	Event                    = __.Event
+	EventWithLocationAndType = __.EventWithLocationAndType
+	ListEventsRequest        = __.ListEventsRequest
+	ListEventsResponse       = __.ListEventsResponse
 
 	ZrpcService interface {
 		ListEvents(ctx context.Context, in *ListEventsRequest, opts ...grpc.CallOption) (*ListEventsResponse, error)
 		// rpc EventDetails(EventDetailsRequest) returns (EventDetailsResponse);
 		CreateEvent(ctx context.Context, in *CreateEventRequest, opts ...grpc.CallOption) (*CreateEventResponse, error)
+		CreateCoupon(ctx context.Context, in *CreateCouponRequest, opts ...grpc.CallOption) (*CreateCouponResponse, error)
 	}
 
 	defaultZrpcService struct {
@@ -46,4 +50,9 @@ func (m *defaultZrpcService) ListEvents(ctx context.Context, in *ListEventsReque
 func (m *defaultZrpcService) CreateEvent(ctx context.Context, in *CreateEventRequest, opts ...grpc.CallOption) (*CreateEventResponse, error) {
 	client := __.NewZrpcServiceClient(m.cli.Conn())
 	return client.CreateEvent(ctx, in, opts...)
+}
+
+func (m *defaultZrpcService) CreateCoupon(ctx context.Context, in *CreateCouponRequest, opts ...grpc.CallOption) (*CreateCouponResponse, error) {
+	client := __.NewZrpcServiceClient(m.cli.Conn())
+	return client.CreateCoupon(ctx, in, opts...)
 }

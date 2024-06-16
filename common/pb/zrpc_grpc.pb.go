@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	ZrpcService_ListEvents_FullMethodName  = "/zrpc.ZrpcService/ListEvents"
-	ZrpcService_CreateEvent_FullMethodName = "/zrpc.ZrpcService/CreateEvent"
+	ZrpcService_ListEvents_FullMethodName   = "/zrpc.ZrpcService/ListEvents"
+	ZrpcService_CreateEvent_FullMethodName  = "/zrpc.ZrpcService/CreateEvent"
+	ZrpcService_CreateCoupon_FullMethodName = "/zrpc.ZrpcService/CreateCoupon"
 )
 
 // ZrpcServiceClient is the client API for ZrpcService service.
@@ -30,6 +31,7 @@ type ZrpcServiceClient interface {
 	ListEvents(ctx context.Context, in *ListEventsRequest, opts ...grpc.CallOption) (*ListEventsResponse, error)
 	// rpc EventDetails(EventDetailsRequest) returns (EventDetailsResponse);
 	CreateEvent(ctx context.Context, in *CreateEventRequest, opts ...grpc.CallOption) (*CreateEventResponse, error)
+	CreateCoupon(ctx context.Context, in *CreateCouponRequest, opts ...grpc.CallOption) (*CreateCouponResponse, error)
 }
 
 type zrpcServiceClient struct {
@@ -58,6 +60,15 @@ func (c *zrpcServiceClient) CreateEvent(ctx context.Context, in *CreateEventRequ
 	return out, nil
 }
 
+func (c *zrpcServiceClient) CreateCoupon(ctx context.Context, in *CreateCouponRequest, opts ...grpc.CallOption) (*CreateCouponResponse, error) {
+	out := new(CreateCouponResponse)
+	err := c.cc.Invoke(ctx, ZrpcService_CreateCoupon_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ZrpcServiceServer is the server API for ZrpcService service.
 // All implementations must embed UnimplementedZrpcServiceServer
 // for forward compatibility
@@ -65,6 +76,7 @@ type ZrpcServiceServer interface {
 	ListEvents(context.Context, *ListEventsRequest) (*ListEventsResponse, error)
 	// rpc EventDetails(EventDetailsRequest) returns (EventDetailsResponse);
 	CreateEvent(context.Context, *CreateEventRequest) (*CreateEventResponse, error)
+	CreateCoupon(context.Context, *CreateCouponRequest) (*CreateCouponResponse, error)
 	mustEmbedUnimplementedZrpcServiceServer()
 }
 
@@ -77,6 +89,9 @@ func (UnimplementedZrpcServiceServer) ListEvents(context.Context, *ListEventsReq
 }
 func (UnimplementedZrpcServiceServer) CreateEvent(context.Context, *CreateEventRequest) (*CreateEventResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateEvent not implemented")
+}
+func (UnimplementedZrpcServiceServer) CreateCoupon(context.Context, *CreateCouponRequest) (*CreateCouponResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateCoupon not implemented")
 }
 func (UnimplementedZrpcServiceServer) mustEmbedUnimplementedZrpcServiceServer() {}
 
@@ -127,6 +142,24 @@ func _ZrpcService_CreateEvent_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ZrpcService_CreateCoupon_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateCouponRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ZrpcServiceServer).CreateCoupon(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ZrpcService_CreateCoupon_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ZrpcServiceServer).CreateCoupon(ctx, req.(*CreateCouponRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ZrpcService_ServiceDesc is the grpc.ServiceDesc for ZrpcService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -141,6 +174,10 @@ var ZrpcService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateEvent",
 			Handler:    _ZrpcService_CreateEvent_Handler,
+		},
+		{
+			MethodName: "CreateCoupon",
+			Handler:    _ZrpcService_CreateCoupon_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

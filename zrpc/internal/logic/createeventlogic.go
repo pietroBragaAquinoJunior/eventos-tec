@@ -28,7 +28,7 @@ func NewCreateEventLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Creat
 }
 
 func (l *CreateEventLogic) CreateEvent(in *__.CreateEventRequest) (*__.CreateEventResponse, error) {
-	id := uuid.NewString()
+	idEvent := uuid.NewString()
 	fileName := uuid.NewString() + ".jpg"
 	filePath := l.svcCtx.Config.ImageStorePath + fileName
 
@@ -62,11 +62,11 @@ func (l *CreateEventLogic) CreateEvent(in *__.CreateEventRequest) (*__.CreateEve
 
 	// Cria um novo modelo de evento
 	m := &models.Event{
-		Id:          id,
+		Id:          idEvent,
 		Title:       in.Event.Title,
 		Date:        parsedDate,
 		Description: in.Event.Description,
-		Eventurl:    in.Event.Eventurl,
+		Eventurl:    in.Event.EventUrl,
 		Remote:      in.Event.Remote,
 		Imgurl:      filePath,
 	}
@@ -77,5 +77,5 @@ func (l *CreateEventLogic) CreateEvent(in *__.CreateEventRequest) (*__.CreateEve
 		return nil, err
 	}
 
-	return &__.CreateEventResponse{Msg: "Evento inserido com sucesso, ID: " + id}, nil
+	return &__.CreateEventResponse{EventId: idEvent}, nil
 }
