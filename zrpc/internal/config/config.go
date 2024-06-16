@@ -9,4 +9,5 @@ type Config struct {
 	zrpc.RpcServerConf
 	DataSourceName string          `json:"dataSourceName"`
 	Cache          cache.CacheConf `json:",optional"`
+	ImageStorePath string          `json:"imageStorePath"`
 }

@@ -13,3 +13,4 @@ Etcd:
     - localhost:2379
   Key: zrpc.rpc
 DataSourceName: "postgres://root:172983456@localhost:5433/eventostec?sslmode=disable"
+ImageStorePath: "./images/"
