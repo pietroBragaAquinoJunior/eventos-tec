@@ -26,3 +26,9 @@ func (s *ZrpcServiceServer) ListEvents(ctx context.Context, in *__.ListEventsReq
 	l := logic.NewListEventsLogic(ctx, s.svcCtx)
 	return l.ListEvents(in)
 }
+
+// rpc EventDetails(EventDetailsRequest) returns (EventDetailsResponse);
+func (s *ZrpcServiceServer) CreateEvent(ctx context.Context, in *__.CreateEventRequest) (*__.CreateEventResponse, error) {
+	l := logic.NewCreateEventLogic(ctx, s.svcCtx)
+	return l.CreateEvent(in)
+}

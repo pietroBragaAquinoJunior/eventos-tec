@@ -39,7 +39,7 @@ func (l *ListEventsLogic) ListEvents(in *__.ListEventsRequest) (*__.ListEventsRe
 	if err != nil {
 		return nil, err
 	}
-	var protoEventList []*__.Event
+	var protoEventList []*__.EventWithLocantionAndTypeString
 	for _, item := range modelEventList {
 		var dataHora string
 		if !item.Date.IsZero() {
@@ -47,7 +47,7 @@ func (l *ListEventsLogic) ListEvents(in *__.ListEventsRequest) (*__.ListEventsRe
 		} else {
 			dataHora = ""
 		}
-		protoEventLocal := &__.Event{
+		protoEventLocal := &__.EventWithLocantionAndTypeString{
 			Title:       item.Title,
 			Date:        dataHora,
 			Banner:      item.Imgurl,

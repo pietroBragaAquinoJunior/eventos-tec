@@ -13,12 +13,17 @@ import (
 )
 
 type (
-	Event              = __.Event
-	ListEventsRequest  = __.ListEventsRequest
-	ListEventsResponse = __.ListEventsResponse
+	CreateEventRequest              = __.CreateEventRequest
+	CreateEventResponse             = __.CreateEventResponse
+	Event                           = __.Event
+	EventWithLocantionAndTypeString = __.EventWithLocantionAndTypeString
+	ListEventsRequest               = __.ListEventsRequest
+	ListEventsResponse              = __.ListEventsResponse
 
 	ZrpcService interface {
 		ListEvents(ctx context.Context, in *ListEventsRequest, opts ...grpc.CallOption) (*ListEventsResponse, error)
+		// rpc EventDetails(EventDetailsRequest) returns (EventDetailsResponse);
+		CreateEvent(ctx context.Context, in *CreateEventRequest, opts ...grpc.CallOption) (*CreateEventResponse, error)
 	}
 
 	defaultZrpcService struct {
@@ -35,4 +40,10 @@ func NewZrpcService(cli zrpc.Client) ZrpcService {
 func (m *defaultZrpcService) ListEvents(ctx context.Context, in *ListEventsRequest, opts ...grpc.CallOption) (*ListEventsResponse, error) {
 	client := __.NewZrpcServiceClient(m.cli.Conn())
 	return client.ListEvents(ctx, in, opts...)
+}
+
+// rpc EventDetails(EventDetailsRequest) returns (EventDetailsResponse);
+func (m *defaultZrpcService) CreateEvent(ctx context.Context, in *CreateEventRequest, opts ...grpc.CallOption) (*CreateEventResponse, error) {
+	client := __.NewZrpcServiceClient(m.cli.Conn())
+	return client.CreateEvent(ctx, in, opts...)
 }
