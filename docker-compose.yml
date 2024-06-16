@@ -38,22 +38,21 @@ services:
     networks:
       - backend
 
-  zrpc:
-    build:
-      context: .
-      dockerfile: ./zrpc/Dockerfile
-    ports:
-      - "8080:8080"
-    depends_on:
-      - postgres_databases
-      - etcd
-    networks:
-      - backend
+#  zrpc:
+#    build:
+#      context: .
+#      dockerfile: ./zrpc/Dockerfile
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - postgres_databases
+#      - etcd
+#    networks:
+#      - backend
 
 networks:
   backend:
 
 volumes:
   postgres-data:
-  redis-data:
   etcd-data:

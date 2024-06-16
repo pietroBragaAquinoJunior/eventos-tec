@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	ZrpcService_ListEvents_FullMethodName = "/zrpc.ZrpcService/ListEvents"
+	ZrpcService_ListEvents_FullMethodName  = "/zrpc.ZrpcService/ListEvents"
+	ZrpcService_CreateEvent_FullMethodName = "/zrpc.ZrpcService/CreateEvent"
 )
 
 // ZrpcServiceClient is the client API for ZrpcService service.
@@ -27,6 +28,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ZrpcServiceClient interface {
 	ListEvents(ctx context.Context, in *ListEventsRequest, opts ...grpc.CallOption) (*ListEventsResponse, error)
+	// rpc EventDetails(EventDetailsRequest) returns (EventDetailsResponse);
+	CreateEvent(ctx context.Context, in *CreateEventRequest, opts ...grpc.CallOption) (*CreateEventResponse, error)
 }
 
 type zrpcServiceClient struct {
@@ -46,11 +49,22 @@ func (c *zrpcServiceClient) ListEvents(ctx context.Context, in *ListEventsReques
 	return out, nil
 }
 
+func (c *zrpcServiceClient) CreateEvent(ctx context.Context, in *CreateEventRequest, opts ...grpc.CallOption) (*CreateEventResponse, error) {
+	out := new(CreateEventResponse)
+	err := c.cc.Invoke(ctx, ZrpcService_CreateEvent_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ZrpcServiceServer is the server API for ZrpcService service.
 // All implementations must embed UnimplementedZrpcServiceServer
 // for forward compatibility
 type ZrpcServiceServer interface {
 	ListEvents(context.Context, *ListEventsRequest) (*ListEventsResponse, error)
+	// rpc EventDetails(EventDetailsRequest) returns (EventDetailsResponse);
+	CreateEvent(context.Context, *CreateEventRequest) (*CreateEventResponse, error)
 	mustEmbedUnimplementedZrpcServiceServer()
 }
 
@@ -60,6 +74,9 @@ type UnimplementedZrpcServiceServer struct {
 
 func (UnimplementedZrpcServiceServer) ListEvents(context.Context, *ListEventsRequest) (*ListEventsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListEvents not implemented")
+}
+func (UnimplementedZrpcServiceServer) CreateEvent(context.Context, *CreateEventRequest) (*CreateEventResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateEvent not implemented")
 }
 func (UnimplementedZrpcServiceServer) mustEmbedUnimplementedZrpcServiceServer() {}
 
@@ -92,6 +109,24 @@ func _ZrpcService_ListEvents_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ZrpcService_CreateEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateEventRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ZrpcServiceServer).CreateEvent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ZrpcService_CreateEvent_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ZrpcServiceServer).CreateEvent(ctx, req.(*CreateEventRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ZrpcService_ServiceDesc is the grpc.ServiceDesc for ZrpcService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -102,6 +137,10 @@ var ZrpcService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListEvents",
 			Handler:    _ZrpcService_ListEvents_Handler,
+		},
+		{
+			MethodName: "CreateEvent",
+			Handler:    _ZrpcService_CreateEvent_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
