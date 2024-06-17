@@ -17,7 +17,7 @@ type (
 	// and implement the added methods in customEventModel.
 	EventModel interface {
 		eventModel
-		ListEvents(ctx context.Context, page int32, pageSize int32) ([]EventWithAddress, int32, int32, error)
+		ListUpcomingEvents(ctx context.Context, page int32, pageSize int32) ([]EventWithAddress, int32, int32, error)
 	}
 
 	customEventModel struct {
@@ -43,21 +43,20 @@ func NewEventModel(conn sqlx.SqlConn) EventModel {
 	}
 }
 
-func (m *customEventModel) ListEvents(ctx context.Context, page int32, pageSize int32) ([]EventWithAddress, int32, int32, error) {
+func (m *customEventModel) ListUpcomingEvents(ctx context.Context, page int32, pageSize int32) ([]EventWithAddress, int32, int32, error) {
 	offset := (page - 1) * pageSize
-
-	query := fmt.Sprintf("SELECT %s FROM %s e JOIN address a on a.event_id = e.id LIMIT %d OFFSET %d", eventWithAddressRows, m.table, pageSize, offset)
-
+	hoje := time.Now().Format("2006-01-02")
+	query := fmt.Sprintf("SELECT %s FROM %s e JOIN address a ON a.event_id = e.id WHERE e.date >= $1 LIMIT $2 OFFSET $3", eventWithAddressRows, m.table)
 	var resp []EventWithAddress
-	err := m.conn.QueryRowsCtx(ctx, &resp, query)
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, hoje, pageSize, offset)
 	if err != nil {
 		return nil, 0, 0, err
 	}
 
 	// Especificar claramente que 'event_id' é de 'a' (address) no COUNT
-	countQuery := fmt.Sprintf("SELECT COUNT(*) FROM %s e JOIN address a on a.event_id = e.id", m.table)
+	countQuery := fmt.Sprintf("SELECT COUNT(*) FROM %s e JOIN address a on a.event_id = e.id WHERE e.date >= $1", m.table)
 	var totalRecords int32
-	err = m.conn.QueryRowCtx(ctx, &totalRecords, countQuery)
+	err = m.conn.QueryRowCtx(ctx, &totalRecords, countQuery, hoje)
 	if err != nil {
 		return nil, 0, 0, err
 	}
