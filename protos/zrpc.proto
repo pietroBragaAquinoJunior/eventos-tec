@@ -14,8 +14,13 @@ message EventWithLocationAndType {
 }
 
 message ListEventsRequest {
-  int32 page = 1;
-  int32 pageSize = 2;
+  string title = 1;
+  string city = 2;
+  string uf = 3;
+  string startDate = 4;
+  string endDate = 5;
+  int32 page = 6;
+  int32 pageSize = 7;
 }
 
 message ListEventsResponse {
