@@ -8,16 +8,18 @@ import (
 )
 
 type ServiceContext struct {
-	Config      config.Config
-	EventModel  models.EventModel
-	CouponModel models.CouponModel
+	Config       config.Config
+	EventModel   models.EventModel
+	CouponModel  models.CouponModel
+	AddressModel models.AddressModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	conn := sqlx.NewSqlConn("pgx", c.DataSourceName)
 	return &ServiceContext{
-		Config:      c,
-		EventModel:  models.NewEventModel(conn),
-		CouponModel: models.NewCouponModel(conn),
+		Config:       c,
+		EventModel:   models.NewEventModel(conn),
+		CouponModel:  models.NewCouponModel(conn),
+		AddressModel: models.NewAddressModel(conn),
 	}
 }

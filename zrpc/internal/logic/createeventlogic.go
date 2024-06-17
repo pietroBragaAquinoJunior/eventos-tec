@@ -77,5 +77,13 @@ func (l *CreateEventLogic) CreateEvent(in *__.CreateEventRequest) (*__.CreateEve
 		return nil, err
 	}
 
+	a := &models.Address{EventId: idEvent, Id: uuid.NewString(), Uf: in.Uf, City: in.City}
+
+	// Insere o endereço no banco de dados
+	if _, err = l.svcCtx.AddressModel.Insert(l.ctx, a); err != nil {
+		l.Logger.Errorf("Erro ao inserir o endereço no banco de dados: %v", err)
+		return nil, err
+	}
+
 	return &__.CreateEventResponse{EventId: idEvent}, nil
 }
