@@ -35,7 +35,7 @@ func (l *ListEventsLogic) ListEvents(in *__.ListEventsRequest) (*__.ListEventsRe
 		pageSize = 10
 	}
 
-	modelEventList, totalPages, currentPage, err := l.svcCtx.EventModel.ListUpcomingEvents(l.ctx, page, pageSize)
+	modelEventList, totalPages, currentPage, err := l.svcCtx.EventModel.ListUpcomingEvents(l.ctx, in.Title, in.City, in.Uf, in.StartDate, in.EndDate, page, pageSize)
 	if err != nil {
 		return nil, err
 	}

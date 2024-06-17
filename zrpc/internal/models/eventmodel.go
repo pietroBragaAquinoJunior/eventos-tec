@@ -17,7 +17,7 @@ type (
 	// and implement the added methods in customEventModel.
 	EventModel interface {
 		eventModel
-		ListUpcomingEvents(ctx context.Context, page int32, pageSize int32) ([]EventWithAddress, int32, int32, error)
+		ListUpcomingEvents(ctx context.Context, title string, city string, uf string, startDate string, endDate string, page int32, pageSize int32) ([]EventWithAddress, int32, int32, error)
 	}
 
 	customEventModel struct {
@@ -43,25 +43,48 @@ func NewEventModel(conn sqlx.SqlConn) EventModel {
 	}
 }
 
-func (m *customEventModel) ListUpcomingEvents(ctx context.Context, page int32, pageSize int32) ([]EventWithAddress, int32, int32, error) {
-	offset := (page - 1) * pageSize
+func (m *customEventModel) ListUpcomingEvents(ctx context.Context, titulo string, cidade string, uf string, dataInicio string, dataFim string, pagina int32, tamanhoPagina int32) ([]EventWithAddress, int32, int32, error) {
+	offset := (pagina - 1) * tamanhoPagina
 	hoje := time.Now().Format("2006-01-02")
-	query := fmt.Sprintf("SELECT %s FROM %s e JOIN address a ON a.event_id = e.id WHERE e.date >= $1 LIMIT $2 OFFSET $3", eventWithAddressRows, m.table)
-	var resp []EventWithAddress
-	err := m.conn.QueryRowsCtx(ctx, &resp, query, hoje, pageSize, offset)
+	if dataInicio == "" {
+		dataInicio = time.Now().Format("2006-01-02")
+	}
+	if dataFim == "" {
+		dataFim = time.Date(2100, time.November, 10, 23, 0, 0, 0, time.UTC).Format("2006-01-02")
+	}
+	query := fmt.Sprintf(`SELECT %s FROM %s e
+    JOIN address a ON a.event_id = e.id
+    WHERE e.date >= $1
+    AND ($2::text IS NULL OR e.title LIKE '%%' || $2 || '%%')
+    AND ($3::text IS NULL OR a.city LIKE '%%' || $3 || '%%')
+    AND ($4::text IS NULL OR a.uf LIKE '%%' || $4 || '%%')
+    AND ($5::date IS NULL OR e.date >= $5)
+    AND ($6::date IS NULL OR e.date <= $6)
+    LIMIT $7 OFFSET $8`, eventWithAddressRows, m.table)
+
+	var resposta []EventWithAddress
+	err := m.conn.QueryRowsCtx(ctx, &resposta, query, hoje, titulo, cidade, uf, dataInicio, dataFim, tamanhoPagina, offset)
 	if err != nil {
 		return nil, 0, 0, err
 	}
 
-	// Especificar claramente que 'event_id' é de 'a' (address) no COUNT
-	countQuery := fmt.Sprintf("SELECT COUNT(*) FROM %s e JOIN address a on a.event_id = e.id WHERE e.date >= $1", m.table)
-	var totalRecords int32
-	err = m.conn.QueryRowCtx(ctx, &totalRecords, countQuery, hoje)
+	// Adicionando os mesmos filtros ao COUNT
+	countQuery := fmt.Sprintf(`SELECT COUNT(*) FROM %s e
+    JOIN address a ON a.event_id = e.id
+    WHERE e.date >= $1
+    AND ($2::text IS NULL OR e.title LIKE '%%' || $2 || '%%')
+    AND ($3::text IS NULL OR a.city LIKE '%%' || $3 || '%%')
+    AND ($4::text IS NULL OR a.uf LIKE '%%' || $4 || '%%')
+    AND ($5::date IS NULL OR e.date >= $5)
+    AND ($6::date IS NULL OR e.date <= $6)`, m.table)
+
+	var totalRegistros int32
+	err = m.conn.QueryRowCtx(ctx, &totalRegistros, countQuery, hoje, titulo, cidade, uf, dataInicio, dataFim)
 	if err != nil {
 		return nil, 0, 0, err
 	}
 
-	totalPages := (totalRecords + pageSize - 1) / pageSize
+	totalPaginas := (totalRegistros + tamanhoPagina - 1) / tamanhoPagina
 
-	return resp, totalPages, page, nil
+	return resposta, totalPaginas, pagina, nil
 }
